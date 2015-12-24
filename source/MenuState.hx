@@ -1,23 +1,32 @@
 package;
 
+import enet.NetBase;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import enet.ENet;
 
 /**
  * A FlxState which can be used for the game's menu.
  */
 class MenuState extends FlxState
 {
+	
+	public var server:GameServer = null;
+	public var client:GameClient = null;
+	
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
 	override public function create():Void
 	{
 		super.create();
+		FlxG.autoPause = false;
+		
+		ENet.init();
 	}
 	
 	/**
@@ -35,5 +44,27 @@ class MenuState extends FlxState
 	override public function update():Void
 	{
 		super.update();
-	}	
+	}
+	
+	public function updateClient():Void
+	{
+		while (true)
+		{
+			updateHost(client);
+		}
+	}
+	
+	public function updateServer():Void
+	{
+		while (true)
+		{
+			updateHost(server);
+		}
+	}
+	
+	public function updateHost(Host:NetBase):Void
+	{
+		Host.poll();
+		Sys.sleep(0.001);
+	}
 }
